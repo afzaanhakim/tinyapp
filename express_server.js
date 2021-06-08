@@ -70,4 +70,15 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
     res.redirect(`/urls`);
   });
+
+//redirects to the existing shortURL page where user can edit the short URL to correspond to a new Long URL
+  app.post("/urls/:shortURL", (req, res) => {
+  const longURL = req.body["longURL"]
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = longURL;
+   res.redirect(`/urls`);
+  });
+  
+
+
   
