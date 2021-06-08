@@ -61,7 +61,7 @@ app.post("/urls", (req, res) => {
 });
 //redirecting to the website once clicked on the new generated shortURL
 app.get("/u/:shortURL", (req, res) => {
-let longURL = `http://${urlDatabase[req.params.shortURL]}`
+let longURL = `${urlDatabase[req.params.shortURL]}`
   res.redirect(longURL);
 });
 
