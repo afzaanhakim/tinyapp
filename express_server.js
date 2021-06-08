@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-
+app.use(express.json())
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -15,9 +15,9 @@ return `${letters[Math.round(Math.random()*9)]}` + `${Math.round(Math.random()*9
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
-  834: "http://www.reddit.com",
+  "b2xVn2": "www.lighthouselabs.ca",
+  "9sm5xK": "www.google.com",
+  834: "www.reddit.com",
 };
 
 
@@ -55,8 +55,17 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let longURL = req.body["longURL"]
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = longURL
+  console.log(urlDatabase)
+  res.redirect(`/urls/${shortURL}`);         
 });
 
-
+app.get("/u/:shortURL", (req, res) => {
+  //console.log(req.params.shortURL)
+  console.log(urlDatabase[req.params.shortURL])
+  
+let longURL = `http://${urlDatabase[req.params.shortURL]}`
+  res.redirect(longURL);
+});
