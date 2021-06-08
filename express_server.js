@@ -25,7 +25,7 @@ app.listen(PORT, () => {
 }); 
 //test page
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect(`/urls`);
 }); 
 //list of URLs in database// homepage
 app.get("/urls", (req, res) => {
