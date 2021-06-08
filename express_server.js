@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-app.use(express.json())
+app.use(express.json());
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+var cookieParser = require('cookie-parser');
 
 function generateRandomString() {
 
@@ -41,12 +42,10 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
+    username: req.cookies["username"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
@@ -79,6 +78,15 @@ app.post("/urls/:shortURL/delete", (req, res) => {
    res.redirect(`/urls`);
   });
   
+
+  //adding an endpint to handle a POST to /login
+
+  app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username)
+  console.log(req.body.username)
+     res.redirect(`/urls`);
+    });
+    
 
 
   
