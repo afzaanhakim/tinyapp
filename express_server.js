@@ -17,7 +17,6 @@ app.set("view engine", "ejs");
 const urlDatabase = {
   "b2xVn2": "www.lighthouselabs.ca",
   "9sm5xK": "www.google.com",
-  834: "www.reddit.com",
 };
 
 
