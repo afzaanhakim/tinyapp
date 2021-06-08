@@ -10,7 +10,7 @@ let letters = ["a","b", "c", "d", "e", "f", "g", "h", "i", "j", "k","l","m", "n"
 
 return `${letters[Math.round(Math.random()*9)]}` + `${Math.round(Math.random()*9)}` + `${letters[Math.round(Math.random()*9)]}`+`${Math.round(Math.random()*9)}` + `${letters[Math.round(Math.random()*9)]}` + `${Math.round(Math.random()*9)}`;
 
-};
+}; //  function to generate random string
 
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
@@ -22,12 +22,12 @@ const urlDatabase = {
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
-});
-
+}); 
+//test page
 app.get("/", (req, res) => {
   res.send("Hello!");
-});
-
+}); 
+//list of URLs in database// homepage
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
@@ -36,7 +36,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
-
+// page for creating a new shortURL
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
@@ -52,15 +52,19 @@ app.get("/urls/:shortURL", (req, res) => {
   };
   res.render("urls_show", templateVars);
 });
-
+// page for the newly generated short URL 
 app.post("/urls", (req, res) => {
   let longURL = req.body["longURL"]
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = longURL
   res.redirect(`/urls/${shortURL}`);         
 });
-
+//redirecting to the website once clicked on the new generated shortURL
 app.get("/u/:shortURL", (req, res) => {
 let longURL = `http://${urlDatabase[req.params.shortURL]}`
   res.redirect(longURL);
 });
+// app.get("/urls/:longURL", (req, res) => {
+//   let longURL = `http://${urlDatabase[req.params.shortURL]}`
+//     res.redirect(longURL);
+//   });
