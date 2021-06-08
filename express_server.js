@@ -64,7 +64,3 @@ app.get("/u/:shortURL", (req, res) => {
 let longURL = `http://${urlDatabase[req.params.shortURL]}`
   res.redirect(longURL);
 });
-// app.get("/urls/:longURL", (req, res) => {
-//   let longURL = `http://${urlDatabase[req.params.shortURL]}`
-//     res.redirect(longURL);
-//   });
