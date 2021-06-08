@@ -65,6 +65,7 @@ let longURL = `http://${urlDatabase[req.params.shortURL]}`
   res.redirect(longURL);
 });
 
+//redirecting to the urls page once clicked on delete for a specific short url
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete  urlDatabase[req.params.shortURL]
     res.redirect(`/urls`);
