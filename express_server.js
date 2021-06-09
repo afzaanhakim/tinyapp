@@ -8,28 +8,29 @@ app.use(cookieParser());
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 const urlDatabase = {};
-const users = {  "userRandomID": {
-  id: "userRandomID", 
-  email: "user@example.com", 
-  password: "purple-monkey-dinosaur"
-},
-"user2RandomID": {
-  id: "user2RandomID", 
-  email: "user2@example.com", 
-  password: "dishwasher-funk"
-}};
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
 
-const userExistsByEmail = function(email){
-
-const keys = Object.keys(users)  
-for (const key of keys){
-  const user = users[key] 
-  if(user.email === email) {
-    return user
+const userExistsByEmail = function (email) {
+  const keys = Object.keys(users);
+  for (const key of keys) {
+    const user = users[key];
+    if (user.email === email) {
+      return user;
+    }
   }
-} return false
-
-}
+  return false;
+};
 //  function to generate random string
 function generateRandomString() {
   let letters = ["a","b", "c", "d", "e", "f", "g", "h", "i", "j", "k","l","m", "n","o","p","q","r","s","t","u","v","w","x","y","z"];
@@ -41,9 +42,7 @@ function generateRandomString() {
     `${letters[Math.round(Math.random() * 9)]}` +
     `${Math.round(Math.random() * 9)}`
   );
-} 
-
-
+}
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -65,14 +64,14 @@ app.get("/urls.json", (req, res) => {
 // page for creating a new shortURL
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    user:req.cookies["user_id"]
+    user: req.cookies["user_id"],
   };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
-    user:req.cookies["user_id"],
+    user: req.cookies["user_id"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
@@ -121,41 +120,36 @@ app.post("/logout", (req, res) => {
 
 //created get for /register to render the regesrations template
 app.get("/register", (req, res) => {
- 
-  const templateVars = { user:req.cookies["user_id"] };
+  const templateVars = { user: req.cookies["user_id"] };
   res.render("urls_registration", templateVars);
 });
-
+//register post for new users, checking if user already exists or empty fields and providing a response accordingly
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  //console.group(userEmail)
-  //console.log(userPassword)
 
-
-//  console.log(users[id])
-// console.log(email)
-
-
-  //console.log(req.body.email)
-  
-  
- console.log(users)
- if (req.body.email === "" || req.body.password === "") {
-  return res.status(400).send("Cannot leave fields empty")
-} 
-let user = userExistsByEmail(email)
-let id;
-console.log(user)
-if (user){
-   return res.status(400).send("User already exists")
-}
-id = generateRandomString();
+  console.log(users);
+  if (req.body.email === "" || req.body.password === "") {
+    return res.status(400).send("Cannot leave fields empty");
+  }
+  let user = userExistsByEmail(email);
+  let id;
+  console.log(user);
+  if (user) {
+    return res.status(400).send("User already exists");
+  }
+  id = generateRandomString();
   // console.log(newUserID);
- user = { id, email, password };
+  user = { id, email, password };
 
- users[id] = user;
+  users[id] = user;
   res.cookie("user_id", users[id]);
-// console.log(users[id])
+  // console.log(users[id])
   res.redirect("/urls");
+});
+
+
+app.get("/login", (req, res) => {
+  const templateVars = { user: req.cookies["user_id"] };
+  res.render("urls_login", templateVars);
 });
