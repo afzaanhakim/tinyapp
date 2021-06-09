@@ -100,6 +100,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     res.redirect(`/urls`);
         });
 
+
+  //created get for /register to render the regesrations template
   app.get("/register", (req, res) => {
     const templateVars = { username: req.cookies["username"] }
 res.render("urls_registration", templateVars);
