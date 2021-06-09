@@ -8,17 +8,24 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        
       </div>
       
     </div>
+    <% if (username)  {%>
+    <label class="form-inline" style="margin: 1em"> logged in as <%=username%>  </label>
+
+    <button type="submit" class="btn btn-outline-dark" >Logout</button>
+    <% } else  {%>
     <form class="form-inline" action="/login" method="POST">
       <input
       class="center"
       type="text"
       name="username"
-      placeholder="Enter Username"
+      placeholder="<%=username %>"
       style="margin: 1em"
     /> <button type="submit" class="btn btn-outline-dark" >Login</button>
+    <% } %>
   </form>
   </nav>
 </header>
