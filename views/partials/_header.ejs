@@ -17,17 +17,8 @@
     <label style="margin: 1em"> Logged In As <%=user.email%> ! </label>
     <button type="submit" class="btn btn-outline-dark" >Logout</button>
     <% } else  {%>
-    <!-- <form class="form-inline" action="/login" method="POST">
-      <input
-      class="center"
-      type="text"
-      name="username"
-      placeholder="Username"
-      style="margin: 1em"
-    /> <button type="submit" class="btn btn-outline-dark" >Login</button> -->
-
-    <a href = "/login" style = "margin: 1em">Login</a>
-    <a href = "/register" style = "margin: 1em">Register</a>
+    <a href = "/login" class="btn btn-secondary" style = "margin: 1em">Login</a>
+    <a href = "/register" class="btn btn-secondary" style = "margin: 1em">Register</a>
     <% } %>
   </form>
   </nav>
