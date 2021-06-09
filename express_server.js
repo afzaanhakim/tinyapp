@@ -18,6 +18,18 @@ const users = {  "userRandomID": {
   email: "user2@example.com", 
   password: "dishwasher-funk"
 }};
+
+const userExistsByEmail = function(email){
+
+const keys = Object.keys(users)  
+for (const key of keys){
+  const user = users[key] 
+  if(user.email === email) {
+    return user
+  }
+} return false
+
+}
 //  function to generate random string
 function generateRandomString() {
   let letters = ["a","b", "c", "d", "e", "f", "g", "h", "i", "j", "k","l","m", "n","o","p","q","r","s","t","u","v","w","x","y","z"];
@@ -119,18 +131,31 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   //console.group(userEmail)
   //console.log(userPassword)
-  if (req.body.email === "" || req.body.password === "") {
-    res.status(400).send("Cannot leave fields empty")
-  }
-  const id = generateRandomString();
-  // console.log(newUserID);
-  const user = { id, email, password };
- // console.log(user);
- users[id] = user;
+
+
 //  console.log(users[id])
+// console.log(email)
+
+
+  //console.log(req.body.email)
+  
+  
+ console.log(users)
+ if (req.body.email === "" || req.body.password === "") {
+  return res.status(400).send("Cannot leave fields empty")
+} 
+let user = userExistsByEmail(email)
+let id;
+console.log(user)
+if (user){
+   return res.status(400).send("User already exists")
+}
+id = generateRandomString();
+  // console.log(newUserID);
+ user = { id, email, password };
+
+ users[id] = user;
   res.cookie("user_id", users[id]);
 // console.log(users[id])
-// console.log(user)
-
   res.redirect("/urls");
 });
