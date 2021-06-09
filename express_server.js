@@ -119,6 +119,9 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   //console.group(userEmail)
   //console.log(userPassword)
+  if (req.body.email === "" || req.body.password === "") {
+    res.status(400).send("Cannot leave fields empty")
+  }
   const id = generateRandomString();
   // console.log(newUserID);
   const user = { id, email, password };
