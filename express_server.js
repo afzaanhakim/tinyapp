@@ -150,6 +150,6 @@ app.post("/register", (req, res) => {
 
 
 app.get("/login", (req, res) => {
-  const templateVars = { user: req.cookies["user_id"] };
+  const templateVars = {user: req.cookies["user_id"]};
   res.render("urls_login", templateVars);
 });
