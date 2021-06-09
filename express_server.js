@@ -96,9 +96,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
      res.redirect(`/urls`);
     });
     
-    app.post("/logout", (req, res) => {
-      res.clearCookie('username', req.body.username)
-         res.redirect(`/urls`);
+  //adding an endpoint to handle a POST to /logout
+  app.post("/logout", (req, res) => {
+  res.clearCookie('username', req.body.username)
+    res.redirect(`/urls`);
         });
         
 
