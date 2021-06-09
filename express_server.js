@@ -18,8 +18,7 @@ return `${letters[Math.round(Math.random()*9)]}` + `${Math.round(Math.random()*9
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 const urlDatabase = {
-  "b2xVn2": "www.lighthouselabs.ca",
-  "9sm5xK": "www.google.com",
+
 };
 
 
@@ -35,6 +34,8 @@ app.get("/urls", (req, res) => {
   console.log(req.cookies)
   const templateVars = { username: req.cookies["username"], urls: urlDatabase };
   res.render("urls_index", templateVars);
+console.log(urlDatabase)
+
 });
 
 app.get("/urls.json", (req, res) => {
@@ -44,8 +45,6 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls/new", (req, res) => {
   const templateVars = {
 username: req.cookies["username"],
-
-
   }
   res.render("urls_new", templateVars);
 });
@@ -92,13 +91,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
   app.post("/login", (req, res) => {
   res.cookie("username", req.body.username)
-  console.log(req.body.username)
      res.redirect(`/urls`);
     });
     
   //adding an endpoint to handle a POST to /logout
   app.post("/logout", (req, res) => {
-  res.clearCookie('username', req.body.username)
+  res.clearCookie('username', req.body.username);
     res.redirect(`/urls`);
         });
         
