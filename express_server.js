@@ -3,7 +3,9 @@ const app = express();
 app.use(express.json());
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-var cookieParser = require('cookie-parser');
+let cookieParser = require('cookie-parser');
+app.use(cookieParser())
+
 
 function generateRandomString() {
 
@@ -30,7 +32,8 @@ app.get("/", (req, res) => {
 }); 
 //list of URLs in database// homepage
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  console.log(req.cookies)
+  const templateVars = { username: req.cookies["username"], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -39,7 +42,12 @@ app.get("/urls.json", (req, res) => {
 });
 // page for creating a new shortURL
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+username: req.cookies["username"],
+
+
+  }
+  res.render("urls_new", templateVars);
 });
 
 
@@ -49,6 +57,7 @@ app.get("/urls/:shortURL", (req, res) => {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
+  console.log(templateVars.username)
   res.render("urls_show", templateVars);
 });
 // page for the newly generated short URL 
@@ -79,7 +88,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   });
   
 
-  //adding an endpint to handle a POST to /login
+  //adding an endpoint to handle a POST to /login
 
   app.post("/login", (req, res) => {
   res.cookie("username", req.body.username)
