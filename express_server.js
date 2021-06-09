@@ -6,6 +6,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 let cookieParser = require('cookie-parser');
 app.use(cookieParser())
 
+ const users = {}
 
 function generateRandomString() {
 
@@ -31,10 +32,8 @@ app.get("/", (req, res) => {
 }); 
 //list of URLs in database// homepage
 app.get("/urls", (req, res) => {
-  console.log(req.cookies)
   const templateVars = { username: req.cookies["username"], urls: urlDatabase };
   res.render("urls_index", templateVars);
-console.log(urlDatabase)
 
 });
 
@@ -56,7 +55,7 @@ app.get("/urls/:shortURL", (req, res) => {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
-  console.log(templateVars.username)
+  
   res.render("urls_show", templateVars);
 });
 // page for the newly generated short URL 
@@ -104,9 +103,20 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   //created get for /register to render the regesrations template
   app.get("/register", (req, res) => {
     const templateVars = { username: req.cookies["username"] }
-res.render("urls_registration", templateVars);
+  res.render("urls_registration", templateVars);
       });
-        
-
+  
+  
+  
+  app.post("/register", (req, res) => {
+    let userEmail = req.body.email;
+    let userPassword = req.body.password
+    console.group(userEmail)
+    console.log(userPassword)
+    const newUserID = generateRandomString();
+    console.log(newUserID)
+    
+    res.redirect("/urls");
+          });
 
   
