@@ -5,8 +5,10 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 let cookieParser = require("cookie-parser");
 app.use(cookieParser());
+const bcrypt = require('bcrypt');
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
+//const bcrypt = require('bcrypt');
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
@@ -196,6 +198,7 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10)
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
@@ -205,7 +208,7 @@ app.post("/login", (req, res) => {
     return res.status(403).send("User Not Found");
   }
   if (user) {
-    if (user.password !== password) {
+    if (!bcrypt.compareSync(password, user.password)) {
       return res.status(403).send("Email or Password does not match records");
     }
   }
@@ -228,7 +231,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
+  const hashedPassword = bcrypt.hashSync(password, 10)
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
@@ -238,8 +241,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send("User already exists");
   }
   id = generateRandomString();
-  user = { id, email, password };
-
+  user = { id, email, password: hashedPassword }
   users[id] = user;
   res.cookie("user_id", id);
   res.redirect("/urls");
