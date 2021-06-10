@@ -108,14 +108,32 @@ app.post("/urls/:shortURL", (req, res) => {
 //adding an endpoint to handle a POST to /login
 
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.cookies);
+  const email = req.body.email
+  const password = req.body.password
+  if (req.body.email === "" || req.body.password === "") {
+    return res.status(400).send("Cannot leave fields empty");
+  }
+  let user = userExistsByEmail(email);
+
+  if (!user) {
+    return res.status(403).send("User Not Found");
+  }
+  if (user){
+    if (user.password !== password) {
+      return res.status(403).send("Email or Password does not match records");
+    }
+  } 
+  id = generateRandomString();
+  user = { id, email, password };
+  users[id] = user;
+  res.cookie("user_id", users[id]);
   res.redirect(`/urls`);
 });
 
 //adding an endpoint to handle a POST to /logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id", req.body.username);
-  res.redirect(`/register`);
+  res.clearCookie("user_id");
+  res.redirect(`/urls`);
 });
 
 //created get for /register to render the regesrations template
@@ -128,7 +146,6 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  console.log(users);
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
@@ -148,7 +165,7 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-
+// created get /login as endpoint for the new login form template
 app.get("/login", (req, res) => {
   const templateVars = {user: req.cookies["user_id"]};
   res.render("urls_login", templateVars);
