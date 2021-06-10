@@ -125,7 +125,6 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  console.log("HERE IS THE GET REQ")
   const userId = req.cookies["user_id"];
   const shortURL = req.params.shortURL;
    const longURL = urlDatabase[req.params.shortURL].longURL
@@ -150,7 +149,6 @@ app.get("/urls/:shortURL", (req, res) => {
 }});
 // page for the newly generated short URL
 app.post("/urls", (req, res) => {
-  console.log(req.cookies["user_id"]);
   let longURL = req.body["longURL"];
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL: longURL, userID: req.cookies.user_id };
@@ -168,9 +166,6 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const userId = req.cookies["user_id"]
-  console.log('THIS IS USER ID ' + userId)
-console.log('THIS IS :'+ shortURL)
-console.log(urlDatabase[shortURL])
 
   if (urlDatabase[shortURL].userID !== userId) {
     res.status(401).send("You do not have access to do this")
@@ -183,7 +178,6 @@ console.log(urlDatabase[shortURL])
 //redirects to the existing shortURL page where user can edit the short URL to correspond to a new Long URL
 app.post("/urls/:shortURL", (req, res) => {
 
-  console.log("ACCESSING POST EDIT ROUTE")
   const userId = req.cookies["user_id"];
   const longURL = req.body["longURL"];
   const shortURL = req.params.shortURL;
