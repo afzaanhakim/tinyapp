@@ -3,12 +3,11 @@ const app = express();
 app.use(express.json());
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
-//let cookieParser = require("cookie-parser");
-//app.use(cookieParser());
+
 const bcrypt = require("bcrypt");
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
-//const bcrypt = require('bcrypt');
+
 
 const cookieSession = require("cookie-session");
 app.use(
@@ -38,7 +37,7 @@ const users = {
 };
 
 // function to check if user email is already there in the database
-const userExistsByEmail = function (email) {
+const getUserByEmail = function (email, users) {
   const keys = Object.keys(users);
   for (const key of keys) {
     const user = users[key];
@@ -212,7 +211,7 @@ app.post("/login", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
-  let user = userExistsByEmail(email);
+  let user = getUserByEmail(email,users);
 
   if (!user) {
     return res.status(403).send("User Not Found");
@@ -245,7 +244,7 @@ app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
-  let user = userExistsByEmail(email);
+  let user = getUserByEmail(email, users);
   let id;
   if (user) {
     return res.status(400).send("User already exists");
