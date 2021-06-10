@@ -92,7 +92,7 @@ app.listen(PORT, () => {
 });
 //homepage page
 app.get("/", (req, res) => {
-  res.redirect(`/urls`);
+  res.redirect(`/login`);
 });
 //list of URLs in database// homepage once user logs in
 app.get("/urls", (req, res) => {
