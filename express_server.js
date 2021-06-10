@@ -108,8 +108,8 @@ app.post("/urls/:shortURL", (req, res) => {
 //adding an endpoint to handle a POST to /login
 
 app.post("/login", (req, res) => {
-  const email = req.body.email
-  const password = req.body.password
+  const email = req.body.email;
+  const password = req.body.password;
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
@@ -118,11 +118,11 @@ app.post("/login", (req, res) => {
   if (!user) {
     return res.status(403).send("User Not Found");
   }
-  if (user){
+  if (user) {
     if (user.password !== password) {
       return res.status(403).send("Email or Password does not match records");
     }
-  } 
+  }
   id = generateRandomString();
   user = { id, email, password };
   users[id] = user;
@@ -167,6 +167,6 @@ app.post("/register", (req, res) => {
 
 // created get /login as endpoint for the new login form template
 app.get("/login", (req, res) => {
-  const templateVars = {user: req.cookies["user_id"]};
+  const templateVars = { user: req.cookies["user_id"] };
   res.render("urls_login", templateVars);
 });
