@@ -132,8 +132,8 @@ app.post("/login", (req, res) => {
 
 //adding an endpoint to handle a POST to /logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
-  res.redirect(`/urls`);
+  res.clearCookie("user_id", users);
+  res.redirect(`/login`);
 });
 
 //created get for /register to render the regesrations template
