@@ -1,13 +1,20 @@
-const { getUserByEmail, generateRandomString } = require("./helpers");
+const {
+  getUserByEmail,
+  generateRandomString,
+  urlsForUser,
+} = require("./helpers");
 
 const express = require("express");
 const app = express();
 app.use(express.json());
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const bcrypt = require("bcrypt");
+
 const PORT = 8080; // default port 8080
+
 app.set("view engine", "ejs");
 
 const cookieSession = require("cookie-session");
@@ -37,32 +44,20 @@ const users = {
   },
 };
 
-// function to check if user email is already there in the database
+// Server Listen
 
-//  function to generate random string
-
-
-const urlsForUser = function (id, database) {
-  let userUrls = {};
-
-  for (let shortURL in database) {
-    if (database[shortURL].userID === id) {
-      userUrls[shortURL] = database[shortURL];
-    }
-  }
-  return userUrls;
-};
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-//homepage page
+
+//if user is logged in redirects to /urls otherwise takes user to /login page
 app.get("/", (req, res) => {
   if (req.session.user_id) {
     return res.redirect("/urls");
   }
   res.redirect("/login");
 });
-//list of URLs in database// homepage once user logs in
+//list of URLs in database// renders urls_index once user logs in, reponds with an error if user is not logged in
 app.get("/urls", (req, res) => {
   const userId = req.session.user_id;
   const user = users[userId];
@@ -75,10 +70,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-// page for creating a new shortURL only when logged in
+// page for creating a new shortURL only when logged in otherwise redirects to login page
 app.get("/urls/new", (req, res) => {
   const userId = req.session.user_id;
   const user = users[userId];
@@ -91,7 +83,7 @@ app.get("/urls/new", (req, res) => {
     res.redirect("/login");
   }
 });
-
+// if a user owns the url then displays the page to update url, shortURL and long URL, else shows error when user is not logged in/if a different user is trying to access this url update
 app.get("/urls/:shortURL", (req, res) => {
   const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
@@ -114,7 +106,7 @@ app.get("/urls/:shortURL", (req, res) => {
     res.render("urls_show", templateVars);
   }
 });
-// page for the newly generated short URL
+
 app.post("/urls", (req, res) => {
   if (req.session.user_id) {
     let longURL = req.body["longURL"];
@@ -126,7 +118,8 @@ app.post("/urls", (req, res) => {
     res.status(401).send("You don't have access to do that");
   }
 });
-//redirecting to the longURL once clicked on the new generated shortURL if shortURL exists in database
+
+//redirecting to the longURL once clicked on the new generated shortURL if shortURL exists in database else shows a message with a 404 error status
 app.get("/u/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   if (urlDatabase[shortURL]) {
@@ -148,7 +141,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   }
 });
 
-//redirects to the existing shortURL page where user can edit the short URL to correspond to a new Long URL
+//if user is logged in and owns url updates url and redirects to /urls else returns no access error page
 app.post("/urls/:shortURL", (req, res) => {
   const userId = req.session.user_id;
   const longURL = req.body["longURL"];
@@ -162,7 +155,7 @@ app.post("/urls/:shortURL", (req, res) => {
   }
 });
 
-//adding an endpoint to handle a POST to /login
+//if email and password match this sets a cookie and redirects to /urls  else shows a relevant error message
 
 app.post("/login", (req, res) => {
   const email = req.body.email;
@@ -185,24 +178,24 @@ app.post("/login", (req, res) => {
   res.redirect(`/urls`);
 });
 
-//adding an endpoint to handle a POST to /logout
+//deletes the user session and redirects to /login page
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect(`/login`);
 });
 
-//created get for /register to render the regesrations template
+//if a user is logged redirecting to /urls page else redirects to /register
 app.get("/register", (req, res) => {
   let userId = req.session.user_id;
   const templateVars = { user: users[req.session.user_id] };
-  if (userId){
-    res.redirect('/urls');
+  if (userId) {
+    res.redirect("/urls");
     return;
   }
-  
+
   res.render("urls_registration", templateVars);
 });
-//register post for new users, checking if user already exists or empty fields and providing a response accordingly
+//if user does not exist in database this creates a new user, redirects to /urls, sets cookie, if user exists then returns an error message, if input fields are empty, then returns a warning page
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -223,12 +216,12 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-// created get /login as endpoint for the new login form template
+// if user is logged in already this redirects to /urls , if not logged in it will render the login page
 app.get("/login", (req, res) => {
-  const userId = req.session.user_id
+  const userId = req.session.user_id;
   const templateVars = { user: users[req.session.user_id] };
-  if (userId){
-    res.redirect('/urls');
+  if (userId) {
+    res.redirect("/urls");
     return;
   }
   res.render("urls_login", templateVars);
