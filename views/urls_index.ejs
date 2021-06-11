@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <! --BOOTSTRAP CSS -->
+    <!--BOOTSTRAP CSS -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
@@ -23,9 +23,8 @@
           <tr>
             <th scope="col">Short URL</th>
             <th scope="col">Long URL</th>
-            <th scope = "col">Edit</th>
-            <th scope = "col">Delete</th>
-
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -34,12 +33,13 @@
             <td><%= url %></td>
             <td><%= urls[url].longURL %></td>
             <td>
-              
-            <a href ="/urls/<%= url %>" class="btn btn-primary">Edit</a>
+              <a href="/urls/<%= url %>" class="btn btn-primary">Edit</a>
             </td>
             <td>
-            <form method="POST" action="/urls/<%= url %>/delete"><button type="delete" class="btn btn-danger">Delete</button></form>
-          </td>
+              <form method="POST" action="/urls/<%= url %>/delete">
+                <button type="delete" class="btn btn-danger">Delete</button>
+              </form>
+            </td>
           </tr>
           <% } %>
         </tbody>
