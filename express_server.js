@@ -1,3 +1,5 @@
+const { getUserByEmail } = require("./helpers");
+
 const express = require("express");
 const app = express();
 app.use(express.json());
@@ -7,7 +9,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const bcrypt = require("bcrypt");
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
-
 
 const cookieSession = require("cookie-session");
 app.use(
@@ -37,16 +38,7 @@ const users = {
 };
 
 // function to check if user email is already there in the database
-const getUserByEmail = function (email, users) {
-  const keys = Object.keys(users);
-  for (const key of keys) {
-    const user = users[key];
-    if (user.email === email) {
-      return user;
-    }
-  }
-  return false;
-};
+
 //  function to generate random string
 function generateRandomString() {
   let letters = [
@@ -102,12 +94,10 @@ app.listen(PORT, () => {
 });
 //homepage page
 app.get("/", (req, res) => {
-  
   if (req.session.user_id) {
-   return  res.redirect('/urls')
-  } 
+    return res.redirect("/urls");
+  }
   res.redirect("/login");
-
 });
 //list of URLs in database// homepage once user logs in
 app.get("/urls", (req, res) => {
@@ -211,7 +201,7 @@ app.post("/login", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
-  let user = getUserByEmail(email,users);
+  let user = getUserByEmail(email, users);
 
   if (!user) {
     return res.status(403).send("User Not Found");
