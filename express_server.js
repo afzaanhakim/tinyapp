@@ -107,7 +107,7 @@ app.get("/urls", (req, res) => {
   const templateVars = { urls: userUrls, user };
 
   if (!userId) {
-    res.status(401).send("Unauthorized access, please login first");
+    res.status(401).send("Unauthorized access, please login or register first");
   }
   res.render("urls_index", templateVars);
 });
@@ -138,7 +138,7 @@ app.get("/urls/:shortURL", (req, res) => {
   if (!urlDatabase[shortURL]) {
     res.status(401).send("Unauthorized access, please login first");
   } else if (!userId || !userUrls[shortURL]) {
-    res.status(404).send("This shortURL does not exist");
+    res.status(404).send("You don't have access to this shortURL");
   } else {
     const templateVars = {
       user,
@@ -153,17 +153,28 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 // page for the newly generated short URL
 app.post("/urls", (req, res) => {
+if (req.session.user_id) {
   let longURL = req.body["longURL"];
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL: longURL, userID: req.session.user_id };
 
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`/urls/${shortURL}`) }
+  else {
+    res.status(401).send("You don't have access to do that")
+  }
+
 });
-//redirecting to the website once clicked on the new generated shortURL
+//redirecting to the longURL once clicked on the new generated shortURL if shortURL exists in database
 app.get("/u/:shortURL", (req, res) => {
+
   let shortURL = req.params.shortURL;
-  let longURL = `${urlDatabase[req.params.shortURL]}`;
-  res.redirect(`/urls/${shortURL}`);
+  if(urlDatabase[shortURL]) {
+  res.redirect(urlDatabase[shortURL].longURL);}
+  else {
+    res.status(404).send("This URL does not exist")
+  }
+
+  
 });
 //redirecting to the urls page once clicked on delete for a specific short url
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -231,6 +242,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, 10);
+
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Cannot leave fields empty");
   }
