@@ -20,7 +20,6 @@ describe("getUserByEmail", function () {
     let email = "a@example.com";
     const user = getUserByEmail(email, testUsers);
     const expectedOutput = testUsers["apple"];
-
     assert.equal(user, expectedOutput);
   });
 
@@ -28,7 +27,6 @@ describe("getUserByEmail", function () {
     let email = "lfc@example.com";
     const user = getUserByEmail(email, testUsers);
     const expectedOutput = undefined;
-
     assert.equal(user, expectedOutput);
   });
 });
