@@ -153,28 +153,24 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 // page for the newly generated short URL
 app.post("/urls", (req, res) => {
-if (req.session.user_id) {
-  let longURL = req.body["longURL"];
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL] = { longURL: longURL, userID: req.session.user_id };
+  if (req.session.user_id) {
+    let longURL = req.body["longURL"];
+    let shortURL = generateRandomString();
+    urlDatabase[shortURL] = { longURL: longURL, userID: req.session.user_id };
 
-  res.redirect(`/urls/${shortURL}`) }
-  else {
-    res.status(401).send("You don't have access to do that")
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    res.status(401).send("You don't have access to do that");
   }
-
 });
 //redirecting to the longURL once clicked on the new generated shortURL if shortURL exists in database
 app.get("/u/:shortURL", (req, res) => {
-
   let shortURL = req.params.shortURL;
-  if(urlDatabase[shortURL]) {
-  res.redirect(urlDatabase[shortURL].longURL);}
-  else {
-    res.status(404).send("This URL does not exist")
+  if (urlDatabase[shortURL]) {
+    res.redirect(urlDatabase[shortURL].longURL);
+  } else {
+    res.status(404).send("This URL does not exist");
   }
-
-  
 });
 //redirecting to the urls page once clicked on delete for a specific short url
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -234,7 +230,13 @@ app.post("/logout", (req, res) => {
 
 //created get for /register to render the regesrations template
 app.get("/register", (req, res) => {
-  const templateVars = { user: req.session.user_id };
+  let userId = req.session.user_id;
+  const templateVars = { user: users[req.session.user_id] };
+  if (userId){
+    res.redirect('/urls');
+    return;
+  }
+  
   res.render("urls_registration", templateVars);
 });
 //register post for new users, checking if user already exists or empty fields and providing a response accordingly
@@ -260,6 +262,11 @@ app.post("/register", (req, res) => {
 
 // created get /login as endpoint for the new login form template
 app.get("/login", (req, res) => {
-  const templateVars = { user: req.session.user_id };
+  const userId = req.session.user_id
+  const templateVars = { user: users[req.session.user_id] };
+  if (userId){
+    res.redirect('/urls');
+    return;
+  }
   res.render("urls_login", templateVars);
 });
