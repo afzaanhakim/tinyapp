@@ -1,4 +1,4 @@
-const { getUserByEmail } = require("./helpers");
+const { getUserByEmail, generateRandomString } = require("./helpers");
 
 const express = require("express");
 const app = express();
@@ -40,44 +40,7 @@ const users = {
 // function to check if user email is already there in the database
 
 //  function to generate random string
-function generateRandomString() {
-  let letters = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z",
-  ];
-  return (
-    `${letters[Math.round(Math.random() * 9)]}` +
-    `${Math.round(Math.random() * 9)}` +
-    `${letters[Math.round(Math.random() * 9)]}` +
-    `${Math.round(Math.random() * 9)}` +
-    `${letters[Math.round(Math.random() * 9)]}` +
-    `${Math.round(Math.random() * 9)}`
-  );
-}
+
 
 const urlsForUser = function (id, database) {
   let userUrls = {};
